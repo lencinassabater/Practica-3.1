@@ -40,6 +40,8 @@
         
     ];
 
+    let mis_peliculas = [];
+
     const postAPI = async (peliculas) => {
         try {
                 const res = await fetch("https://api.myjson.com/bins", {
@@ -193,9 +195,9 @@
             await indexContr();
         }
 
-    const indexContr = () => {
-        let mis_peliculas = JSON.parse(localStorage.mis_peliculas);
-        document.getElementById('main').innerHTML = indexView(mis_peliculas);
+    const indexContr = async () => {
+        mis_peliculas = await getAPI() || [];
+        document.getElementById('main').innerHTML = await indexView(mis_peliculas);
     };
 
     const showContr = (i) => {
@@ -208,14 +210,7 @@
     };
 
     const createContr = () => {
-        let mis_peliculas = JSON.parse(localStorage.mis_peliculas);
-        var new_pelicula = {
-            titulo : document.getElementById("titulo").value,
-            director : document.getElementById("director").value,
-            miniatura : document.getElementById("miniatura").value};
-        mis_peliculas.push(new_pelicula);
-        localStorage.mis_peliculas = JSON.stringify(mis_peliculas);
-        indexContr();
+        
     };
 
     const editContr = (i) => {
