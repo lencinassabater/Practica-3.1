@@ -65,7 +65,7 @@
           }
         }
 
-        
+
     const updateAPI = async (peliculas) => {
           try {
             await fetch(localStorage.URL, {
@@ -186,6 +186,13 @@
 
 
     // CONTROLADORES
+    const initContr = async () => {
+            if (!localStorage.URL) {
+                localStorage.URL = await postAPI(mis_peliculas_iniciales);
+            }
+            await indexContr();
+        }
+
     const indexContr = () => {
         let mis_peliculas = JSON.parse(localStorage.mis_peliculas);
         document.getElementById('main').innerHTML = indexView(mis_peliculas);
