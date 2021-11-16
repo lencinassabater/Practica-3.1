@@ -210,38 +210,41 @@
     };
 
     const createContr = () => {
+        let n_titulo   = document.getElementById('titulo').value;
+        let n_director = document.getElementById('director').value;
+        let n_miniatura = document.getElementById('miniatura').value;
+        mis_peliculas.push({titulo: n_titulo, director: n_director, miniatura: n_miniatura});
+        await updateAPI(mis_peliculas);
+        indexContr();
         
     };
 
     const editContr = (i) => {
-        let pelicula = JSON.parse(localStorage.mis_peliculas)[i];
-        document.getElementById('main').innerHTML = editView(i, pelicula);
+        
+        document.getElementById('main').innerHTML = editView(i, mis_peliculas[i]);
     };
 
     const updateContr = (i) => {
-        let mis_peliculas = JSON.parse(localStorage.mis_peliculas);
+        
         mis_peliculas[i].titulo    = document.getElementById('titulo').value;
         mis_peliculas[i].director  = document.getElementById('director').value;
         mis_peliculas[i].miniatura = document.getElementById('miniatura').value;
-        localStorage.mis_peliculas = JSON.stringify(mis_peliculas);
-        indexContr();
+        await updateAPI(mis_peliculas);
+        await indexContr();
     };
 
     const deleteContr = (i) => {
-        let mis_peliculas = JSON.parse(localStorage.mis_peliculas);
-        var r = confirm("Seguro que quieres eliminarla?");
-        if (r == true) {
-            mis_peliculas.splice(i,1);
-            localStorage.mis_peliculas = JSON.stringify(mis_peliculas);
-            indexContr();
-        } else {
-            indexContr();
-        }
+        if (confirm(`Borrar ${mis_peliculas[i].titulo}`)) {
+                mis_peliculas.splice(i, 1); // elimina elemento i del array
+                await updateAPI(mis_peliculas);
+                await indexContr();
+            }
     };
 
     const resetContr = () => {
-        localStorage.mis_peliculas = JSON.stringify(mis_peliculas_iniciales);
-        indexContr();
+        mis_peliculas = [...mis_peliculas_iniciales];
+        await updateAPI(mis_peliculas);
+        await indexContr();
     };
 
     // ROUTER de eventos
@@ -250,18 +253,28 @@
 
     document.addEventListener('click', ev => {
         if      (matchEvent(ev, '.index'))  indexContr  ();
+        else if (matchEvent(ev, '.show'))   showContr   (myId(ev));
+        else if (matchEvent(ev, '.new'))    newContr    ();
+        else if (matchEvent(ev, '.create')) createContr ();
         else if (matchEvent(ev, '.edit'))   editContr   (myId(ev));
         else if (matchEvent(ev, '.update')) updateContr (myId(ev));
-        else if (matchEvent(ev, '.show')) showContr (myId(ev));
-        else if (matchEvent(ev, '.new')) newContr (myId(ev));
-        else if (matchEvent(ev, '.create')) createContr (myId(ev));
         else if (matchEvent(ev, '.delete')) deleteContr (myId(ev));
-        else if (matchEvent(ev, '.reset')) resetContr (myId(ev));
+        else if (matchEvent(ev, '.reset'))  resetContr ();
         // Completar añadiendo los controladores que faltan
     })
 
 
     // Inicialización
-    document.addEventListener('DOMContentLoaded', indexContr);
+    document.addEventListener('DOMContentLoaded', initContr);
 
 </script>
+
+<body>
+
+    <h1>Mis Películas Favoritas</h1>
+    <div id="main"> 
+      Cargando...
+    </div>
+    
+</body>
+</html>
